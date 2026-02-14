@@ -2,21 +2,18 @@
 
 import { useActionState, useEffect } from "react"
 import { toast } from "sonner"
+import type { ActionFunction, FormActionState } from "@/utils/types"
 
-type FormContainer = {
-    action: (formData: FormData) => Promise<FormActionState>
+type FormContainerProps = {
+    action: ActionFunction;
     children: React.ReactNode
-}
-
-type FormActionState = {
-    message: string;
 }
 
 const initState: FormActionState = {
     message: ''
 }
 
-export default function FormContainer({ action, children }: FormContainer){
+export default function FormContainer({ action, children }: FormContainerProps){
     const [state, formAction] = useActionState(action, initState)
 
     useEffect(() => {
