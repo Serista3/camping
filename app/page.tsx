@@ -1,9 +1,9 @@
-import { Button } from "@/components/ui/button";
+import LandmarkContainer from "@/components/home/LandmarkContainer";
 
 export default function Home() {
   return (
     <>
-      <Button>Submit</Button>
+      <LandmarkContainer />
     </>
   );
 }

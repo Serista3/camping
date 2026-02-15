@@ -19,5 +19,9 @@ export const links: LinkItem[] = [
     {
         href: '/camp', 
         label: 'Camp'
+    },
+    {
+        href: '/camp/create',
+        label: 'Create Landmark'
     }
 ]
