@@ -1,19 +1,14 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Kanit } from "next/font/google";
 import "./globals.css";
 import Nav from "@/components/navbar/Nav";
 import Provider from "./Provider";
 import { ClerkProvider } from "@clerk/nextjs";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const kanit = Kanit({
+  weight: ['400', '600'],
+  subsets: ['latin', 'thai']
+})
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -29,7 +24,7 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          className={`${kanit.className} antialiased`}
         >
           <Provider>
             <Nav />

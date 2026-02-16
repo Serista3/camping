@@ -8,13 +8,13 @@ export default function LandmarkCard({ landmark }: { landmark: LandmarkCardProps
 
   return (
     <article className="relative group">
-      <div className="relative h-75 rounded-lg border overflow-hidden">
+      <div className="relative rounded-lg border">
         <Image 
           src={landmark.image}
           alt={landmark.name}
           width={400}
           height={300}
-          className="object-cover rounded-lg group-hover:scale-102 transition-all duration-300"
+          className="object-cover max-h-50 rounded-lg group-hover:scale-102 transition-all duration-300"
         />
       </div>
 

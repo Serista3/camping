@@ -6,6 +6,7 @@ import { clerkClient, currentUser } from "@clerk/nextjs/server"
 import db from '@/utils/db'
 import { redirect } from "next/navigation"
 import { uploadFile } from "@/utils/supabase"
+import { revalidatePath } from "next/cache"
 
 const getAuthUser = async function(){
     const user = await currentUser();
@@ -79,8 +80,25 @@ export const createLandmarkAction = async function(prevState: FormActionState, f
     redirect('/')
 }
 
-export const getLandmarks = async function(){
+export const getLandmarks = async function({ search = '', category = '' }: { search?: string, category?: string }){
     const landmarks = await db.landmark.findMany({
+        where: {
+            category,
+            OR: [
+                { 
+                    name: { 
+                        contains: search, 
+                        mode: 'insensitive' 
+                    } 
+                },
+                {
+                    description: {
+                        contains: search,
+                        mode: 'insensitive'
+                    }
+                }
+            ]
+        },
         orderBy: {
             createdAt: 'desc'
         }
@@ -104,6 +122,59 @@ export const getFavoriteId = async function({ landmarkId }: { landmarkId: string
     return favorite?.id || null
 }
 
-export const toggleFavoriteAction = async function(){
-    return { message: 'Add favorite success!' }
+export const toggleFavoriteAction = async function(prevState: {
+    favoriteId: string | null;
+    landmarkId: string;
+    pathName: string;
+}){
+    const { favoriteId, landmarkId, pathName } = prevState
+    const user = await getAuthUser()
+
+    try {
+        if(favoriteId){
+            await db.favorite.delete({
+                where: {
+                    id: favoriteId
+                }
+            })
+        }else {
+            await db.favorite.create({
+                data: {
+                    landmarkId: landmarkId,
+                    profileId: user.id
+                }
+            })
+        }
+
+        revalidatePath(pathName)
+        return { message: `${favoriteId ? 'Remove' : 'Add'} favorite success!` }
+    }catch (err){
+        return renderError(err)
+    }
+}
+
+export const getFavorites = async function(){
+    const user = await getAuthUser()
+    const favorites = await db.favorite.findMany({
+        where: {
+            profileId: user.id
+        },
+        select: {
+            landmark: {
+                select: {
+                    id: true,
+                    name: true,
+                    description: true,
+                    image: true,
+                    price: true,
+                    province: true,
+                    lat: true,
+                    lng: true,
+                    category: true
+                }
+            }
+        }
+    })
+
+    return favorites.map(fav => fav.landmark)
 }

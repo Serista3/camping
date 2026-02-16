@@ -46,3 +46,19 @@ export const SignInCardButton = function(){
         </SignInButton>
     )
 }
+
+export const CardSumbitButton = function({ isFav }: { isFav: boolean }){
+    const { pending } = useFormStatus()
+
+    return (
+        <Button type="submit" size='icon' disabled={pending} variant='outline'>
+            {
+                pending 
+                ? <LoaderCircle className="animate-spin" />
+                : isFav
+                ? <Heart fill="black"/>
+                : <Heart />
+            }
+        </Button>
+    )
+}

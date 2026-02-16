@@ -1,5 +1,10 @@
-export default function Favorites(){
+import { getFavorites } from "@/action/actions"
+import LandmarkList from "@/components/home/LandmarkList"
+
+export default async function Favorites(){
+    const favorites = await getFavorites()
+
     return (
-        <div></div>
+        <LandmarkList landmarks={favorites} />
     )
 }
